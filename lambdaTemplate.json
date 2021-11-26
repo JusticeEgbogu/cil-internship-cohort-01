@@ -1,0 +1,60 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters" : {
+      "ThumbnailCreator" : {
+        "Type" : "AWS::Lambda::Function",
+        "Properties":{
+            "FunctionName": "ThumbnailCreator",
+            "Handler":"lambda/index.handler",
+            "Role":{
+                "Fn::GetAtt":[
+                    "ThumbnailCreatorRole",
+                    "Arn"
+                ]
+            },
+            "Code":{
+                "S3Bucket": "imageprocessing-for-module2",
+                "S3Key":"CreateThumbnail.zip"
+            },
+            "Runtime": "python3.9"
+        }
+      }
+    },  
+
+    "ThumbnailCreatorRole": {
+        "Type": "AWS::IAM::Role",
+        "Properties": {
+            "RoleName": "ThumbnailCreatorRole",
+            "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [{ "Effect": "Allow", "Principal": {"Service": ["lambda.amazonaws.com"]}, "Action": ["sts:AssumeRole"] }]
+          },
+          "Path": "/",
+          "Policies": [{
+            "PolicyName": "AWSLambdaBasicExecutionRole",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [{ "Effect": "Allow", "Action": ["logs:*"], "Resource": "arn:aws:logs:*:*:*" }]
+            }
+          }]
+        }
+      },
+
+       
+          "PolicyName": "AmazonS3FullAccess",
+          "PolicyDocument":{
+              "Version":"2012-10-17",
+              "Statement":[
+                  {
+                      "Effect":"Allow",
+                      "Action":"s3:*",
+                      "Resource": [
+                          "arn:aws:s3:::imageprocessing-for-module2/CreateThumbnail.zip",
+                          "arn:aws:s3:::imageprocessing-for-module2/CreateThumbnail.zip/*"
+                      ]
+                  }
+              ]
+          }
+        }
+ 
+ 
